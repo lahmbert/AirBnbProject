@@ -1,0 +1,16 @@
+migrate create -ext sql -dir db/migrations -seq init_schema
+
+
+migrate create -ext sql -dir db/migrations -seq add_column_product
+
+migrate -path db/migrations -database "postgresql://postgres:admin@localhost:5432/northwind_db30?sslmode=disable" -verbose up
+
+sqlc init
+sqlc generate
+
+CREATE SEQUENCE orders_order_id_seq INCREMENT 1 START 11077;	
+ALTER SEQUENCE orders_order_id_seq OWNED BY orders.order_id; 
+ALTER TABLE orders ALTER COLUMN order_id SET DEFAULT nextval('orders_order_id_seq');
+
+--add extension
+CREATE EXTENSION pgcrypto;
